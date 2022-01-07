@@ -1,50 +1,35 @@
-import express from 'express'
+import express, { Express, Request, Response, NextFunction } from 'express'
 import helmet from 'helmet'
 import cors from 'cors'
 import bodyParser from 'body-parser'
-import dotenv from 'dotenv'
-import dispatcher from './utils/dispatcher'
-import { resolve } from 'path'
-import auth from './utils/auth'
-import { sign } from 'jsonwebtoken'
+import dispatcher  from './utils/dispatcher'
 
-dotenv.config()
-const port = process.env.npm_config_port || process.env.PORT
-const secret = String(process.env.JWT_SECRET)
+export class WebApiServer {
+    protected app: Express;
 
-const app = express()
-app.use(helmet())
-app.use(cors())
-app.use(bodyParser.json())
-app.use(bodyParser.urlencoded({
-    extended: false
-}))
+    protected port: number;
 
-app.get('/authorize', (req, res) => {
-    const date = new Date()
-    date.setHours(date.getHours() + 1)
-    const exp = Math.floor(date.getTime() / 1000)
-    const payload = {
-        exp,
+    rootDirectory: string = './controllers';
+
+    constructor(port: number) {
+        this.app = express()
+        this.port = port
+        this.app.use(helmet())
+        this.app.use(cors())
+        this.app.use(bodyParser.json())
+        this.app.use(bodyParser.urlencoded({
+            extended: false
+        }))
     }
-    const token = sign(payload, secret)
-    res.send({token}).end()
-})
 
-app.use(auth({
-    secret,
-}))
+    use(middleware: (req: Request, res: Response, next: NextFunction) => void) {
+        this.app.use(middleware)
+    }
 
-app.use(dispatcher())
-
-app.get('/', (req, res) => {
-    res.send('Hello world!').end()
-})
-
-app.listen(port, () => {
-    console.log('\x1B[32mServer Start Successfully!\x1B[0m')
-})
-
-const statics = express()
-statics.use(express.static(resolve(__dirname, '../public')))
-statics.listen(3002)
+    run() {
+        this.app.use(dispatcher({
+            directory: this.rootDirectory,
+        }))
+        this.app.listen(this.port)
+    }
+}

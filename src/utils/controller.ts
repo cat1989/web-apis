@@ -10,7 +10,8 @@ export class ControllerBase {
         this.response = response
     }
 
-    created() {
+    created(url: string) {
+        this.response.setHeader('Location', url)
         this.response.status(201).end()
     }
 

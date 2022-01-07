@@ -1,5 +1,5 @@
-import { ControllerBase } from '../utils/controller'
-import { httpGet, httpPost } from '../utils/decorator'
+import { ControllerBase } from '../src/utils/controller'
+import { httpGet, httpPost } from '../src/utils/decorator'
 import { People } from '../models/people'
 
 export class PeopleController extends ControllerBase {

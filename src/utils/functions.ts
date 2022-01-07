@@ -25,6 +25,7 @@ export function getActionParameter(method: string, id: string, body: Record<stri
             return [id]
     }
 }
+
 export function isNullish(value: any) {
     return value === null || value === undefined
 }
