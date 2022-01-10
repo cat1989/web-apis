@@ -2,10 +2,11 @@
   "name": "@cat1989/web-apis",
   "version": "1.0.0",
   "description": "",
-  "main": "src/index.ts",
+  "main": "dist/index.js",
   "scripts": {
     "dev": "ts-node-dev index.ts",
-    "serve": "ts-node index.ts"
+    "serve": "ts-node index.ts",
+    "build": "tsc"
   },
   "repository": {
     "type": "git",
